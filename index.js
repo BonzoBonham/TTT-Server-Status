@@ -3,9 +3,26 @@ const Discord = require("discord.js");
 const Gamedig = require('gamedig');
 const bot = new Discord.Client({disableEveryone: true});
 
+//Function called every 30000 ms to update the "game" played by the bot
+function update(){
+
+    //Server status query
+    Gamedig.query({
+        type: 'garrysmod',
+        host: '66.151.244.2'
+    }).then((state) => {
+        var status = state.players.length + " of " + state.maxplayers + " in map " + state.map;
+        bot.user.setActivity(status, { type: 'PLAYING' })
+        console.log("Status updated!")
+    }).catch((error) => {
+        console.log("Server is offline");
+    });
+};
+
 bot.on("ready", async() => {
     console.log(`${bot.user.username} is online!`);
-    bot.user.setActivity("BOT Opie is gay");
+    console.log("I am ready!");
+    bot.setInterval(update,30000);
 });
 
 bot.on("message", async message => {
@@ -17,7 +34,7 @@ bot.on("message", async message => {
     let cmd = messageArray[0];
     let args = messageArray.slice(1);
 
-    if (cmd === `${prefix}bonzo`){
+    /*if (cmd === `${prefix}bonzo`){
         //hello world command
 
         message.channel.send("hi, bonzo made me");
@@ -40,8 +57,9 @@ bot.on("message", async message => {
             .catch(console.error);
         }, 3000);
         return;
-    }
+    }*/
 
+    /*
     if (cmd === `${prefix}info`){
         //test richembed command
         let botembed = new Discord.RichEmbed()
@@ -50,23 +68,26 @@ bot.on("message", async message => {
         .addField("Bot Name", bot.user.username);
 
         return message.channel.send(botembed);
-    }
+    }*/
 
+    /*
     if (cmd === `${prefix}dmg`){
         let dmgstatus = new Discord.RichEmbed()
         .setTitle("This is the title")
         .setDescription("This is the description aaaaaaaaaaaaaaaaaaaaaaaah");
 
         return message.channel.send(dmgstatus);
-    }
+    }*/
 
+    /*
     if (cmd === `${prefix}updatebonzo`){
        // message.delete().catch(O_o=>{});
         message.edit('i say this now')
         .then(msg => console.log(`New message content: ${msg}`))
         .catch(console.error);
-    }
+    }*/
 
+    //bot command that returns amount of online players and map being played
     if (cmd === `${prefix}stat`){
         Gamedig.query({
             type: 'garrysmod',
@@ -78,7 +99,32 @@ bot.on("message", async message => {
         }).catch((error) => {
             console.log("Server is offline");
         });
-     }
+    }
+
+    //bot command that returns the names of every online player
+    if (cmd === `${prefix}players`){
+        Gamedig.query({
+            type: 'garrysmod',
+            host: '66.151.244.2'
+        }).then((state) => {
+            console.log(state);
+            var i = 0;
+            var playerlist = "";
+            console.log(playerlist)
+            playerArray = state.players;
+            console.log(playerArray);
+            while (i < playerArray.length) {
+                console.log("ahhhhhhhhhhhhhhhhhhhhhhh");
+                console.log(playerArray[i]);
+                playerlist = playerlist + playerArray[i].name + ", ";
+                i++;
+            }
+            message.channel.send ("Sending list of online players...")
+            message.channel.send (playerlist)
+        }).catch((error) => {
+            console.log("Server is offline");
+        });
+    }
 
 });
 
