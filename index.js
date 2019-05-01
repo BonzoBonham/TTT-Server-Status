@@ -17,7 +17,18 @@ bot.on("message", async message => {
     let args = messageArray.slice(1);
 
     if (cmd === `${prefix}bonzo`){
+        //hello world command
         return message.channel.send("hi, bonzo made me")
+    }
+
+    if (cmd === `${prefix}info`){
+        //test richembed command
+        let botembed = new Discord.RichEmbed()
+        .setDescription("Bonzo gang")
+        .setColor("#00ff00")
+        .addField("Bot Name", bot.user.username);
+
+        return message.channel.send(botembed);
     }
 });
 
