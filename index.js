@@ -19,12 +19,47 @@ function update(){
     });
 };
 
+//Function called every 30000 ms to update the title of the voice channel with the server status
+function voicechannelupdate(){
+
+    //Server status query
+    Gamedig.query({
+        type: 'garrysmod',
+        host: '66.151.244.2'
+    }).then((state) => {
+        var status = state.players.length + " of " + state.maxplayers + " in map " + state.map;
+        statuschannel = bot.channels.get("573005197270319107");
+        statuschannel.setName(status);
+        console.log("Status updated!")
+    }).catch((error) => {
+        console.log("Server is offline");
+    });
+};
+
+function textchannelupdate(){
+    //Server status query
+    Gamedig.query({
+        type: 'garrysmod',
+        host: '66.151.244.2'
+    }).then((state) => {
+        var status = state.players.length + " of " + state.maxplayers + " in map " + state.map;
+        statuschannel = bot.channels.get("573005197270319107");
+        statuschannel.setName(status);
+        console.log("Status updated!")
+    }).catch((error) => {
+        console.log("Server is offline");
+    });
+}
+
+//Sets the "game" being played by the bot every 30 seconds
 bot.on("ready", async() => {
     console.log(`${bot.user.username} is online!`);
     console.log("I am ready!");
     bot.setInterval(update,30000);
+    bot.setInterval(voicechannelupdate,30000);
 });
 
+//List of commands that can be called to the bot
 bot.on("message", async message => {
     if (message.author.bot) return;
     if (message.channel.type === "dm") return;
@@ -119,8 +154,8 @@ bot.on("message", async message => {
                 playerlist = playerlist + playerArray[i].name + ", ";
                 i++;
             }
-            message.channel.send ("Sending list of online players...")
-            message.channel.send (playerlist)
+            message.author.send (playerlist);
+            message.channel.send ("Check your DM's for a list of online players!");  
         }).catch((error) => {
             console.log("Server is offline");
         });
