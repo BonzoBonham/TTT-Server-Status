@@ -42,21 +42,46 @@ function textchannelupdate(){
         type: 'garrysmod',
         host: '66.151.244.2'
     }).then((state) => {
-        var status = state.players.length + " of " + state.maxplayers + " in map " + state.map;
-        statuschannel = bot.channels.get("573005197270319107");
-        statuschannel.setName(status);
+        var i = 0;
+        playerlist = ""
+        playerArray = state.players;
+        console.log("getting players...")
+        while (i < playerArray.length) {
+            playerlist = playerlist + playerArray[i].name + ", ";
+            i++;
+        }
+        console.log(playerlist);
+        statuschannel = bot.channels.get("573008157585047554");
         console.log("Status updated!")
+
+        statuschannel.fetchMessages({ limit: 1 }).then(messages => {
+            lastMessage = messages.first();
+            console.log("fetchin messages...")
+            if (!lastMessage.author.bot) {
+              console.log("last message's author is not a bot!")
+            }
+        }).catch(console.error);
+        
+        lastMessage.edit(`${playerlist}`)
+        .then(msg => console.log(`New message content: ${msg}`))
+        .catch(console.error);
+        
+
     }).catch((error) => {
         console.log("Server is offline");
     });
 }
 
 //Sets the "game" being played by the bot every 30 seconds
-bot.on("ready", async() => {
+bot.on("ready", async message => {
     console.log(`${bot.user.username} is online!`);
     console.log("I am ready!");
     bot.setInterval(update,30000);
     bot.setInterval(voicechannelupdate,30000);
+    statuschat = bot.channels.get("573008157585047554");
+    statuschat.send("steam://connect/66.151.244.2:27015");
+    statuschat.send("Initializing...");
+    bot.setInterval(textchannelupdate,3000);
 });
 
 //List of commands that can be called to the bot
