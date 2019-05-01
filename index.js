@@ -1,5 +1,6 @@
 const botconfig = require("./botconfig.json");
 const Discord = require("discord.js");
+const Gamedig = require('gamedig');
 const bot = new Discord.Client({disableEveryone: true});
 
 bot.on("ready", async() => {
@@ -65,6 +66,19 @@ bot.on("message", async message => {
         .then(msg => console.log(`New message content: ${msg}`))
         .catch(console.error);
     }
+
+    if (cmd === `${prefix}stat`){
+        Gamedig.query({
+            type: 'garrysmod',
+            host: '66.151.244.2'
+        }).then((state) => {
+            console.log(state);
+            message.channel.send(`The server has ${state.players.length} players on right now.`);
+            message.channel.send(`The server is on the map ${state.map} right now.`)
+        }).catch((error) => {
+            console.log("Server is offline");
+        });
+     }
 
 });
 
