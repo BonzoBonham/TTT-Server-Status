@@ -1,4 +1,4 @@
-const { prefix, token, gamedigConfig } = require("./botconfig.json");
+const { prefie, token, gamedigConfig } = require("./botconfig.json");
 const Discord = require("discord.js");
 const Gamedig = require('gamedig');
 const bot = new Discord.Client({disableEveryone: true});
@@ -87,20 +87,23 @@ bot.on("message", async message => {
     if (message.author.bot) return;
     if (message.channel.type === "dm") return;
 
-    let prefix = prefix;
+    let prefix = prefie;
     let messageArray = message.content.split(" ");
     let cmd = messageArray[0];
     let args = messageArray.slice(1);
 
+    if (cmd === `${prefix}botinfo`){
+        message.channel.send("I was made by Bonzo, for the DMG Discord server!");
+    }
+
     //bot command that returns amount of online players and map being played
-    if (cmd === `${prefix}stat`){
+    if (cmd === `${prefix}invite`){
         Gamedig.query({
             type: 'garrysmod',
             host: '66.151.244.2'
         }).then((state) => {
             console.log(state);
-            message.channel.send(`The server has ${state.players.length} players on right now.`);
-            message.channel.send(`The server is on the map ${state.map} right now.`)
+            message.channel.send(`The server has ${state.players.length} players on, and is on the map ${state.map} right now. Come join us! steam://connect/66.151.244.2:27015`);
         }).catch((error) => {
             console.log("Server is offline");
         });
@@ -132,5 +135,6 @@ bot.on("message", async message => {
     }
 
 });
+
 
 bot.login(token);
